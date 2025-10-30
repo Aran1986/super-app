@@ -121,32 +121,33 @@ export default function Home() {
       </aside>
 
       <footer className="footer">
-        <div className="footer-side">
-          <button className="footer-btn">
-            <span className="icon">💬</span>
-            <span className="label">پشتیبانی</span>
+        <button className="footer-side-btn" title="پشتیبانی">
+          <span>💬</span>
+        </button>
+
+        <div className="chat-section">
+          <button className="chat-action-btn" title="ضمیمه فایل">
+            <span>📎</span>
+          </button>
+          
+          <input 
+            type="text" 
+            className="chat-input" 
+            placeholder="پیام خود را بنویسید..."
+          />
+          
+          <button className="chat-action-btn" title="ارسال صوت">
+            <span>🎤</span>
+          </button>
+          
+          <button className="chat-send-btn" title="ارسال">
+            <span>➤</span>
           </button>
         </div>
 
-        <div className="footer-center">
-          <button className="chat-trigger">
-            <span className="icon">💬</span>
-            <span className="label">چت</span>
-          </button>
-          <div className="chat-quick-actions">
-            <button className="quick-btn" title="چت با AI">🤖</button>
-            <button className="quick-btn" title="ارسال صوت">🎤</button>
-            <button className="quick-btn" title="ارسال فایل">📎</button>
-            <button className="quick-btn" title="چت گروهی">👥</button>
-          </div>
-        </div>
-
-        <div className="footer-side">
-          <button className="footer-btn">
-            <span className="icon">👥</span>
-            <span className="label">اجتماعی</span>
-          </button>
-        </div>
+        <button className="footer-side-btn" title="اجتماعی">
+          <span>👥</span>
+        </button>
       </footer>
     </div>
   );
