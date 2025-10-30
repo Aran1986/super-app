@@ -3,8 +3,14 @@
 import './footer-widgets.css';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import ProfileModal from '@/components/ProfileModal';
+import TodoModal from '@/components/TodoModal';
 
 export default function Home() {
+  // Modals
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showTodoModal, setShowTodoModal] = useState(false);
+  
   // State for Footer
   const [currentTime, setCurrentTime] = useState(null);
   const [showTimeModal, setShowTimeModal] = useState(false);
@@ -159,11 +165,16 @@ export default function Home() {
         
         <div className="header-right">
           <button className="header-btn notif">🔔</button>
+          <button className="header-btn" onClick={() => setShowTodoModal(true)} title="وظایف">
+            ✓
+          </button>
           <button className="header-btn wallet">
             <span>💳</span>
             <span>کیف پول</span>
           </button>
-          <button className="header-btn avatar">AR</button>
+          <button className="header-btn avatar" onClick={() => setShowProfileModal(true)} title="پروفایل">
+            AR
+          </button>
         </div>
       </header>
 
@@ -280,6 +291,10 @@ export default function Home() {
               className="chat-input" 
               placeholder="پیام خود را بنویسید..."
             />
+            
+            <button className="chat-action-btn" title="تماس تصویری">
+              <span>📹</span>
+            </button>
             
             <button className="chat-action-btn" title="ارسال صوت">
               <span>🎤</span>
@@ -449,6 +464,12 @@ export default function Home() {
           </div>
         </div>
       )}
+
+      {/* Profile Modal */}
+      <ProfileModal isOpen={showProfileModal} onClose={() => setShowProfileModal(false)} />
+
+      {/* Todo Modal */}
+      <TodoModal isOpen={showTodoModal} onClose={() => setShowTodoModal(false)} />
     </div>
   );
 }
