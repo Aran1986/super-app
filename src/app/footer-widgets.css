@@ -1,34 +1,89 @@
-/* Footer Widgets Styles */
-.footer-widget {
+/* Footer Styles */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  height: 50px;
+  background: linear-gradient(135deg, rgba(17, 24, 39, 0.95), rgba(31, 41, 55, 0.95));
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(59, 130, 246, 0.2);
+  padding: 0;
+  gap: 0;
+}
+
+/* بخش چت - سمت چپ */
+.footer-chat-section {
   display: flex;
   align-items: center;
-  gap: 4px;
-  padding: 4px 8px;
-  background: rgba(59, 130, 246, 0.15);
-  border: 1px solid rgba(59, 130, 246, 0.3);
-  border-radius: 6px;
+  flex: 1;
+  gap: 8px;
+  padding: 0 12px;
+}
+
+/* بخش اطلاعات - سمت راست (مثل Windows) */
+.footer-info-section {
+  display: flex;
+  align-items: stretch;
+  background: rgba(17, 24, 39, 0.8);
+  border-left: 1px solid rgba(59, 130, 246, 0.2);
+  min-width: 200px;
+}
+
+.info-widget {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 4px 16px;
+  background: transparent;
+  border: none;
+  border-left: 1px solid rgba(59, 130, 246, 0.1);
   cursor: pointer;
   transition: all 0.2s;
-  font-size: 10px;
-  height: 28px;
-  white-space: nowrap;
+  min-width: 100px;
 }
 
-.footer-widget:hover {
-  background: rgba(59, 130, 246, 0.25);
-  border-color: rgba(59, 130, 246, 0.5);
-  transform: translateY(-1px);
+.info-widget:hover {
+  background: rgba(59, 130, 246, 0.15);
 }
 
-.footer-widget .widget-icon {
-  font-size: 14px;
+.info-widget:first-child {
+  border-left: none;
 }
 
-.footer-widget .widget-text {
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 2px;
+}
+
+.info-icon {
+  font-size: 16px;
+}
+
+.info-time,
+.info-temp {
+  font-size: 13px;
+  font-weight: 600;
   color: #e5e7eb;
   font-family: 'Courier New', monospace;
-  font-weight: 600;
-  font-size: 11px;
+}
+
+.info-date,
+.info-condition {
+  font-size: 9px;
+  color: #9ca3af;
+  text-align: center;
+}
+
+/* Chat Section */
+.chat-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  max-width: 600px;
 }
 
 /* Modal Overlay */

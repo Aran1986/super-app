@@ -262,57 +262,69 @@ export default function Home() {
         </div>
       </aside>
 
-      {/* FOOTER با ساعت و هواشناسی */}
+      {/* FOOTER دوبخشی */}
       <footer className="footer">
-        <button className="footer-side-btn" title="پشتیبانی">
-          <span>💬</span>
-        </button>
-
-        <div className="chat-section">
-          <button className="chat-action-btn" title="ضمیمه فایل">
-            <span>📎</span>
-          </button>
-          
-          <input 
-            type="text" 
-            className="chat-input" 
-            placeholder="پیام خود را بنویسید..."
-          />
-          
-          {/* Time Widget */}
-          <button 
-            onClick={() => setShowTimeModal(true)}
-            className="footer-widget time-widget"
-            title="ساعت و تاریخ"
-          >
-            <span className="widget-icon">🕐</span>
-            <span className="widget-text">{currentTime ? formatTime(currentTime) : '--:--:--'}</span>
+        {/* بخش چت - سمت چپ */}
+        <div className="footer-chat-section">
+          <button className="footer-side-btn" title="پشتیبانی">
+            <span>💬</span>
           </button>
 
-          {/* Weather Widget */}
-          <button
-            onClick={() => setShowWeatherModal(true)}
-            className="footer-widget weather-widget"
-            title="وضعیت هوا"
-          >
-            <span className="widget-icon">{loading ? '⏳' : weather.icon}</span>
-            <span className="widget-text">
-              {weather.temp ? `${weather.temp}°C` : '...'}
-            </span>
-          </button>
-          
-          <button className="chat-action-btn" title="ارسال صوت">
-            <span>🎤</span>
-          </button>
-          
-          <button className="chat-send-btn" title="ارسال">
-            <span>➤</span>
+          <div className="chat-section">
+            <button className="chat-action-btn" title="ضمیمه فایل">
+              <span>📎</span>
+            </button>
+            
+            <input 
+              type="text" 
+              className="chat-input" 
+              placeholder="پیام خود را بنویسید..."
+            />
+            
+            <button className="chat-action-btn" title="ارسال صوت">
+              <span>🎤</span>
+            </button>
+            
+            <button className="chat-send-btn" title="ارسال">
+              <span>➤</span>
+            </button>
+          </div>
+
+          <button className="footer-side-btn" title="اجتماعی">
+            <span>👥</span>
           </button>
         </div>
 
-        <button className="footer-side-btn" title="اجتماعی">
-          <span>👥</span>
-        </button>
+        {/* بخش اطلاعات - سمت راست (مثل Windows taskbar) */}
+        <div className="footer-info-section">
+          <button 
+            onClick={() => setShowTimeModal(true)}
+            className="info-widget"
+            title="کلیک برای جزئیات"
+          >
+            <div className="info-row">
+              <span className="info-icon">🕐</span>
+              <span className="info-time">{currentTime ? formatTime(currentTime) : '--:--:--'}</span>
+            </div>
+            <div className="info-date">
+              {currentTime ? new Intl.DateTimeFormat('fa-IR', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(currentTime) : '----/--/--'}
+            </div>
+          </button>
+
+          <button
+            onClick={() => setShowWeatherModal(true)}
+            className="info-widget"
+            title="کلیک برای جزئیات"
+          >
+            <div className="info-row">
+              <span className="info-icon">{loading ? '⏳' : weather.icon}</span>
+              <span className="info-temp">{weather.temp ? `${weather.temp}°C` : '...'}</span>
+            </div>
+            <div className="info-condition">
+              {weather.condition}
+            </div>
+          </button>
+        </div>
       </footer>
 
       {/* Time Modal */}
