@@ -126,11 +126,10 @@ export default function NotesModal({ isOpen, onClose }: NotesModalProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay">
       <div className="modal-content notes-modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h3>📝 یادداشت‌ها</h3>
-          <button onClick={onClose}>✕</button>
         </div>
 
         <div className="modal-body">

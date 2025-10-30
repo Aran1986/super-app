@@ -46,11 +46,10 @@ export default function ProfileModal({ isOpen, onClose }: ProfileModalProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay">
       <div className="modal-content profile-modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h3>👤 پروفایل کاربری</h3>
-          <button onClick={onClose}>✕</button>
         </div>
 
         <div className="modal-body">

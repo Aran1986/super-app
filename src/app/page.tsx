@@ -3,15 +3,12 @@
 import './footer-widgets.css';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import ProfileModal from '@/components/ProfileModal';
-import TodoModal from '@/components/TodoModal';
-import NotesModal from '@/components/NotesModal';
+import TabSystem from '@/components/TabSystem';
 
 export default function Home() {
-  // Modals
-  const [showProfileModal, setShowProfileModal] = useState(false);
-  const [showTodoModal, setShowTodoModal] = useState(false);
-  const [showNotesModal, setShowNotesModal] = useState(false);
+  // Modals for time and weather (kept in Footer)
+  const [showTimeModal, setShowTimeModal] = useState(false);
+  const [showWeatherModal, setShowWeatherModal] = useState(false);
   
   // State for Footer
   const [currentTime, setCurrentTime] = useState(null);
@@ -167,101 +164,19 @@ export default function Home() {
         
         <div className="header-right">
           <button className="header-btn notif">🔔</button>
-          <button className="header-btn" onClick={() => setShowTodoModal(true)} title="وظایف">
-            ✓
-          </button>
           <button className="header-btn wallet">
             <span>💳</span>
             <span>کیف پول</span>
           </button>
-          <button className="header-btn avatar" onClick={() => setShowProfileModal(true)} title="پروفایل">
-            AR
-          </button>
+          <button className="header-btn avatar">AR</button>
         </div>
       </header>
 
-      <aside className="left-sidebar">
-        <div className="menu-item active">
-          <span className="icon">🏠</span>
-          <span className="text">خانه</span>
-        </div>
-        <div className="menu-item" onClick={() => setShowNotesModal(true)}>
-          <span className="icon">📝</span>
-          <span className="text">یادداشت</span>
-        </div>
-        <div className="menu-item">
-          <span className="icon">💰</span>
-          <span className="text">مالی</span>
-        </div>
-        <div className="menu-item">
-          <span className="icon">🏥</span>
-          <span className="text">سلامت</span>
-        </div>
-        <div className="menu-item">
-          <span className="icon">👥</span>
-          <span className="text">اجتماعی</span>
-        </div>
-        <div className="menu-item">
-          <span className="icon">🛒</span>
-          <span className="text">بازار</span>
-        </div>
-        <div className="menu-item">
-          <span className="icon">📚</span>
-          <span className="text">آموزش</span>
-        </div>
-        <div className="menu-item">
-          <span className="icon">🎬</span>
-          <span className="text">سرگرمی</span>
-        </div>
-        <div className="menu-item">
-          <span className="icon">✈️</span>
-          <span className="text">سفر</span>
-        </div>
-        <div className="menu-item">
-          <span className="icon">💼</span>
-          <span className="text">کسب‌وکار</span>
-        </div>
-        <div className="menu-item">
-          <span className="icon">🔌</span>
-          <span className="text">IoT</span>
-        </div>
-        <div className="menu-item">
-          <span className="icon">🤖</span>
-          <span className="text">AI</span>
-        </div>
-      </aside>
-
       <main className="main-screen">
-        <div className="welcome-section">
-          <h1>خوش آمدید به Super App</h1>
-          <p>سوپر اپ ماژولار Web3 شما</p>
-          
-          <div className="modules-grid">
-            <div className="module-card">
-              <div className="module-icon">💰</div>
-              <h3>خدمات مالی</h3>
-              <p>کیف پول، صرافی، P2P و بیشتر</p>
-            </div>
-            
-            <div className="module-card">
-              <div className="module-icon">🏥</div>
-              <h3>سلامت</h3>
-              <p>پرونده پزشکی، پزشک آنلاین، داروخانه</p>
-            </div>
-            
-            <div className="module-card">
-              <div className="module-icon">👥</div>
-              <h3>اجتماعی</h3>
-              <p>پیام‌رسانی، شبکه اجتماعی، انجمن‌ها</p>
-            </div>
-            
-            <div className="module-card">
-              <div className="module-icon">🛒</div>
-              <h3>بازار</h3>
-              <p>تجارت الکترونیک، NFT، خدمات</p>
-            </div>
-          </div>
-        </div>
+        <TabSystem 
+          onTimeClick={() => setShowTimeModal(true)}
+          onWeatherClick={() => setShowWeatherModal(true)}
+        />
       </main>
 
       <aside className="right-sidebar">
@@ -470,15 +385,6 @@ export default function Home() {
           </div>
         </div>
       )}
-
-      {/* Profile Modal */}
-      <ProfileModal isOpen={showProfileModal} onClose={() => setShowProfileModal(false)} />
-
-      {/* Todo Modal */}
-      <TodoModal isOpen={showTodoModal} onClose={() => setShowTodoModal(false)} />
-
-      {/* Notes Modal */}
-      <NotesModal isOpen={showNotesModal} onClose={() => setShowNotesModal(false)} />
     </div>
   );
 }

@@ -71,11 +71,10 @@ export default function TodoModal({ isOpen, onClose }: TodoModalProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
+    <div className="modal-overlay">
       <div className="modal-content todo-modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h3>✓ لیست وظایف</h3>
-          <button onClick={onClose}>✕</button>
         </div>
 
         <div className="modal-body">
