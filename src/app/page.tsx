@@ -1,5 +1,6 @@
 'use client';
 
+import './footer-widgets.css';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
