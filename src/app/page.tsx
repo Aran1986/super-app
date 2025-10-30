@@ -5,7 +5,7 @@ import axios from 'axios';
 
 export default function Home() {
   // State for Footer
-  const [currentTime, setCurrentTime] = useState(new Date());
+  const [currentTime, setCurrentTime] = useState(null);
   const [showTimeModal, setShowTimeModal] = useState(false);
   const [showWeatherModal, setShowWeatherModal] = useState(false);
   const [use24Hour, setUse24Hour] = useState(true);
@@ -26,6 +26,7 @@ export default function Home() {
 
   // Update time every second
   useEffect(() => {
+    setCurrentTime(new Date());
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
@@ -266,7 +267,17 @@ export default function Home() {
           <span>💬</span>
         </button>
 
-        <div className="footer-widgets">
+        <div className="chat-section">
+          <button className="chat-action-btn" title="ضمیمه فایل">
+            <span>📎</span>
+          </button>
+          
+          <input 
+            type="text" 
+            className="chat-input" 
+            placeholder="پیام خود را بنویسید..."
+          />
+          
           {/* Time Widget */}
           <button 
             onClick={() => setShowTimeModal(true)}
@@ -274,7 +285,7 @@ export default function Home() {
             title="ساعت و تاریخ"
           >
             <span className="widget-icon">🕐</span>
-            <span className="widget-text">{formatTime(currentTime)}</span>
+            <span className="widget-text">{currentTime ? formatTime(currentTime) : '--:--:--'}</span>
           </button>
 
           {/* Weather Widget */}
@@ -288,18 +299,6 @@ export default function Home() {
               {weather.temp ? `${weather.temp}°C` : '...'}
             </span>
           </button>
-        </div>
-
-        <div className="chat-section">
-          <button className="chat-action-btn" title="ضمیمه فایل">
-            <span>📎</span>
-          </button>
-          
-          <input 
-            type="text" 
-            className="chat-input" 
-            placeholder="پیام خود را بنویسید..."
-          />
           
           <button className="chat-action-btn" title="ارسال صوت">
             <span>🎤</span>
@@ -332,8 +331,8 @@ export default function Home() {
             
             <div className="modal-body">
               <div className="time-display">
-                <div className="time-large">{formatTime(currentTime)}</div>
-                <div className="date-persian">{formatPersianDate(currentTime)}</div>
+                <div className="time-large">{currentTime ? formatTime(currentTime) : '--:--:--'}</div>
+                <div className="date-persian">{currentTime ? formatPersianDate(currentTime) : 'در حال بارگذاری...'}</div>
                 <div className="timezone">منطقه زمانی: تهران (UTC+3:30)</div>
               </div>
 
