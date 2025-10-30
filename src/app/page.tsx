@@ -5,11 +5,13 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import ProfileModal from '@/components/ProfileModal';
 import TodoModal from '@/components/TodoModal';
+import NotesModal from '@/components/NotesModal';
 
 export default function Home() {
   // Modals
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showTodoModal, setShowTodoModal] = useState(false);
+  const [showNotesModal, setShowNotesModal] = useState(false);
   
   // State for Footer
   const [currentTime, setCurrentTime] = useState(null);
@@ -182,6 +184,10 @@ export default function Home() {
         <div className="menu-item active">
           <span className="icon">🏠</span>
           <span className="text">خانه</span>
+        </div>
+        <div className="menu-item" onClick={() => setShowNotesModal(true)}>
+          <span className="icon">📝</span>
+          <span className="text">یادداشت</span>
         </div>
         <div className="menu-item">
           <span className="icon">💰</span>
@@ -470,6 +476,9 @@ export default function Home() {
 
       {/* Todo Modal */}
       <TodoModal isOpen={showTodoModal} onClose={() => setShowTodoModal(false)} />
+
+      {/* Notes Modal */}
+      <NotesModal isOpen={showNotesModal} onClose={() => setShowNotesModal(false)} />
     </div>
   );
 }
