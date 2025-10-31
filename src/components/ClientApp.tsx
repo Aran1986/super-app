@@ -212,6 +212,14 @@ export default function ClientApp() {
           <span className="icon">🎬</span>
           <span className="text">سرگرمی</span>
         </div>
+        <div className="menu-item" onClick={() => openTab('music', 'موسیقی', '🎵')}>
+          <span className="icon">🎵</span>
+          <span className="text">موسیقی</span>
+        </div>
+        <div className="menu-item" onClick={() => openTab('video', 'ویدیو', '📺')}>
+          <span className="icon">📺</span>
+          <span className="text">ویدیو</span>
+        </div>
         <div className="menu-item" onClick={() => openTab('travel', 'سفر', '✈️')}>
           <span className="icon">✈️</span>
           <span className="text">سفر</span>
@@ -380,6 +388,100 @@ export default function ClientApp() {
             </div>
           )}
 
+          {activeTabId === 'music' && (
+            <div className="tab-content-inner">
+              <h2>🎵 موسیقی</h2>
+              
+              <div className="media-section">
+                <h3>🎧 Spotify</h3>
+                <p className="media-desc">پخش موسیقی از Spotify</p>
+                <iframe 
+                  style={{borderRadius: '12px', marginTop: '16px'}} 
+                  src="https://open.spotify.com/embed/playlist/37i9dQZF1DXcBWIGoYBM5M?utm_source=generator" 
+                  width="100%" 
+                  height="352" 
+                  frameBorder="0" 
+                  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                  loading="lazy"
+                ></iframe>
+              </div>
+
+              <div className="media-section">
+                <h3>☁️ SoundCloud</h3>
+                <p className="media-desc">کشف موسیقی‌های جدید</p>
+                <iframe 
+                  width="100%" 
+                  height="166" 
+                  scrolling="no" 
+                  frameBorder="no" 
+                  allow="autoplay" 
+                  src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/1647288529&color=%23ff5500&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"
+                  style={{borderRadius: '12px', marginTop: '16px'}}
+                ></iframe>
+              </div>
+            </div>
+          )}
+
+          {activeTabId === 'video' && (
+            <div className="tab-content-inner">
+              <h2>📺 ویدیو</h2>
+              
+              <div className="media-section">
+                <h3>📺 YouTube</h3>
+                <p className="media-desc">تماشای ویدیوهای YouTube</p>
+                <iframe 
+                  width="100%" 
+                  height="400" 
+                  src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+                  title="YouTube video player" 
+                  frameBorder="0" 
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                  allowFullScreen
+                  style={{borderRadius: '12px', marginTop: '16px'}}
+                ></iframe>
+              </div>
+
+              <div className="media-section">
+                <h3>🎬 Vimeo</h3>
+                <p className="media-desc">ویدیوهای با کیفیت بالا</p>
+                <iframe 
+                  src="https://player.vimeo.com/video/148751763?h=5b9d3b73c6" 
+                  width="100%" 
+                  height="400" 
+                  frameBorder="0" 
+                  allow="autoplay; fullscreen; picture-in-picture" 
+                  allowFullScreen
+                  style={{borderRadius: '12px', marginTop: '16px'}}
+                ></iframe>
+              </div>
+
+              <div className="media-section">
+                <h3>🎥 آپارات</h3>
+                <p className="media-desc">پلتفرم ویدیوی ایرانی</p>
+                <div style={{
+                  position: 'relative',
+                  paddingBottom: '56.25%',
+                  height: 0,
+                  overflow: 'hidden',
+                  marginTop: '16px',
+                  borderRadius: '12px'
+                }}>
+                  <iframe 
+                    src="https://www.aparat.com/video/video/embed/videohash/jMwl9/vt/frame" 
+                    allowFullScreen={true} 
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: '100%'
+                    }}
+                  ></iframe>
+                </div>
+              </div>
+            </div>
+          )}
+
           {activeTabId === 'chess' && (
             <div className="tab-content-inner" style={{padding: 0}}>
               <div className="game-wrapper">
@@ -440,7 +542,7 @@ export default function ClientApp() {
             </div>
           )}
 
-          {activeTabId !== 'home' && activeTabId !== 'todo' && activeTabId !== 'weather' && activeTabId !== 'video-call' && activeTabId !== 'entertainment' && activeTabId !== 'chess' && activeTabId !== '2048' && activeTabId !== 'tetris' && activeTabId !== 'snake' && (
+          {activeTabId !== 'home' && activeTabId !== 'todo' && activeTabId !== 'weather' && activeTabId !== 'video-call' && activeTabId !== 'entertainment' && activeTabId !== 'music' && activeTabId !== 'video' && activeTabId !== 'chess' && activeTabId !== '2048' && activeTabId !== 'tetris' && activeTabId !== 'snake' && (
             <div className="tab-content-inner">
               <h2>{tabs.find(t => t.id === activeTabId)?.name}</h2>
               <div style={{padding: '40px', textAlign: 'center', color: '#64748b'}}>

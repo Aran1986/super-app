@@ -629,6 +629,30 @@ body {
   transform: translateY(-2px);
 }
 
+/* Media Section */
+.media-section {
+  margin-bottom: 40px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid var(--border);
+}
+
+.media-section:last-child {
+  border-bottom: none;
+}
+
+.media-section h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--dark);
+  margin-bottom: 8px;
+}
+
+.media-desc {
+  font-size: 14px;
+  color: var(--gray);
+  margin-bottom: 16px;
+}
+
 .welcome-section {
   max-width: 1200px;
   margin: 0 auto;
