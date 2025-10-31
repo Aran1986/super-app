@@ -6,7 +6,10 @@ export default function ClientApp() {
   const [currentTime, setCurrentTime] = useState('');
   const [currentDate, setCurrentDate] = useState('');
   const [weather] = useState({ temp: '24', condition: '☀️' });
-  const [activeTab, setActiveTab] = useState<string | null>(null);
+  const [tabs, setTabs] = useState<Array<{id: string, name: string, icon: string}>>([
+    { id: 'home', name: 'خانه', icon: '🏠' }
+  ]);
+  const [activeTabId, setActiveTabId] = useState('home');
   const [showProfile, setShowProfile] = useState(false);
   const [showNotes, setShowNotes] = useState(false);
   const [todos, setTodos] = useState<Array<{id: number, text: string, done: boolean}>>([]);
@@ -25,12 +28,27 @@ export default function ClientApp() {
     return () => clearInterval(interval);
   }, []);
 
-  const openTab = (tabName: string) => {
-    setActiveTab(tabName);
+  const openTab = (tabId: string, tabName: string, tabIcon: string) => {
+    const existingTab = tabs.find(tab => tab.id === tabId);
+    if (existingTab) {
+      setActiveTabId(tabId);
+    } else {
+      setTabs([...tabs, { id: tabId, name: tabName, icon: tabIcon }]);
+      setActiveTabId(tabId);
+    }
   };
 
-  const closeTab = () => {
-    setActiveTab(null);
+  const closeTab = (tabId: string) => {
+    const newTabs = tabs.filter(tab => tab.id !== tabId);
+    if (newTabs.length === 0) {
+      setTabs([{ id: 'home', name: 'خانه', icon: '🏠' }]);
+      setActiveTabId('home');
+    } else {
+      setTabs(newTabs);
+      if (activeTabId === tabId) {
+        setActiveTabId(newTabs[newTabs.length - 1].id);
+      }
+    }
   };
 
   const addTodo = () => {
@@ -76,7 +94,7 @@ export default function ClientApp() {
         </div>
         
         <div className="header-right">
-          <button className="header-btn" onClick={() => openTab('todo')}>📝</button>
+          <button className="header-btn" onClick={() => openTab('todo', 'لیست کارها', '📝')}>📝</button>
           <button className="header-btn notif">🔔</button>
           <button className="header-btn wallet">
             <span>💳</span>
@@ -105,155 +123,170 @@ export default function ClientApp() {
       </header>
 
       <aside className="left-sidebar">
-        <div className="menu-item active">
+        <div className="menu-item active" onClick={() => openTab('home', 'خانه', '🏠')}>
           <span className="icon">🏠</span>
           <span className="text">خانه</span>
         </div>
-        <div className="menu-item" onClick={() => openTab('finance')}>
+        <div className="menu-item" onClick={() => openTab('finance', 'خدمات مالی', '💰')}>
           <span className="icon">💰</span>
           <span className="text">مالی</span>
         </div>
-        <div className="menu-item" onClick={() => openTab('health')}>
+        <div className="menu-item" onClick={() => openTab('health', 'سلامت', '🏥')}>
           <span className="icon">🏥</span>
           <span className="text">سلامت</span>
         </div>
-        <div className="menu-item" onClick={() => openTab('social')}>
+        <div className="menu-item" onClick={() => openTab('social', 'اجتماعی', '👥')}>
           <span className="icon">👥</span>
           <span className="text">اجتماعی</span>
         </div>
-        <div className="menu-item" onClick={() => openTab('market')}>
+        <div className="menu-item" onClick={() => openTab('market', 'بازار', '🛒')}>
           <span className="icon">🛒</span>
           <span className="text">بازار</span>
         </div>
-        <div className="menu-item" onClick={() => openTab('education')}>
+        <div className="menu-item" onClick={() => openTab('education', 'آموزش', '📚')}>
           <span className="icon">📚</span>
           <span className="text">آموزش</span>
         </div>
-        <div className="menu-item" onClick={() => openTab('entertainment')}>
+        <div className="menu-item" onClick={() => openTab('entertainment', 'سرگرمی', '🎬')}>
           <span className="icon">🎬</span>
           <span className="text">سرگرمی</span>
         </div>
-        <div className="menu-item" onClick={() => openTab('travel')}>
+        <div className="menu-item" onClick={() => openTab('travel', 'سفر', '✈️')}>
           <span className="icon">✈️</span>
           <span className="text">سفر</span>
         </div>
-        <div className="menu-item" onClick={() => openTab('business')}>
+        <div className="menu-item" onClick={() => openTab('business', 'کسب‌وکار', '💼')}>
           <span className="icon">💼</span>
           <span className="text">کسب‌وکار</span>
         </div>
-        <div className="menu-item" onClick={() => openTab('iot')}>
+        <div className="menu-item" onClick={() => openTab('iot', 'IoT', '🔌')}>
           <span className="icon">🔌</span>
           <span className="text">IoT</span>
         </div>
-        <div className="menu-item" onClick={() => openTab('ai')}>
+        <div className="menu-item" onClick={() => openTab('ai', 'AI', '🤖')}>
           <span className="icon">🤖</span>
           <span className="text">AI</span>
         </div>
       </aside>
 
       <main className="main-screen">
-        {activeTab === null && (
-          <div className="welcome-section">
-            <h1>خوش آمدید به Super App</h1>
-            <p>سوپر اپ ماژولار Web3 شما</p>
-            
-            <div className="modules-grid">
-              <div className="module-card" onClick={() => openTab('finance')}>
-                <div className="module-icon">💰</div>
-                <h3>خدمات مالی</h3>
-                <p>کیف پول، صرافی، P2P و بیشتر</p>
-              </div>
+        <div className="tabs-bar">
+          {tabs.map(tab => (
+            <div 
+              key={tab.id} 
+              className={`tab ${activeTabId === tab.id ? 'active' : ''}`}
+              onClick={() => setActiveTabId(tab.id)}
+            >
+              <span className="tab-icon">{tab.icon}</span>
+              <span className="tab-name">{tab.name}</span>
+              {tabs.length > 1 && (
+                <button 
+                  className="tab-close-btn" 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    closeTab(tab.id);
+                  }}
+                >✕</button>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <div className="tab-content-area">
+          {activeTabId === 'home' && (
+            <div className="welcome-section">
+              <h1>خوش آمدید به Super App</h1>
+              <p>سوپر اپ ماژولار Web3 شما</p>
               
-              <div className="module-card" onClick={() => openTab('health')}>
-                <div className="module-icon">🏥</div>
-                <h3>سلامت</h3>
-                <p>پرونده پزشکی، پزشک آنلاین، داروخانه</p>
-              </div>
-              
-              <div className="module-card" onClick={() => openTab('social')}>
-                <div className="module-icon">👥</div>
-                <h3>اجتماعی</h3>
-                <p>پیام‌رسانی، شبکه اجتماعی، انجمن‌ها</p>
-              </div>
-              
-              <div className="module-card" onClick={() => openTab('market')}>
-                <div className="module-icon">🛒</div>
-                <h3>بازار</h3>
-                <p>تجارت الکترونیک، NFT، خدمات</p>
+              <div className="modules-grid">
+                <div className="module-card" onClick={() => openTab('finance', 'خدمات مالی', '💰')}>
+                  <div className="module-icon">💰</div>
+                  <h3>خدمات مالی</h3>
+                  <p>کیف پول، صرافی، P2P و بیشتر</p>
+                </div>
+                
+                <div className="module-card" onClick={() => openTab('health', 'سلامت', '🏥')}>
+                  <div className="module-icon">🏥</div>
+                  <h3>سلامت</h3>
+                  <p>پرونده پزشکی، پزشک آنلاین، داروخانه</p>
+                </div>
+                
+                <div className="module-card" onClick={() => openTab('social', 'اجتماعی', '👥')}>
+                  <div className="module-icon">👥</div>
+                  <h3>اجتماعی</h3>
+                  <p>پیام‌رسانی، شبکه اجتماعی، انجمن‌ها</p>
+                </div>
+                
+                <div className="module-card" onClick={() => openTab('market', 'بازار', '🛒')}>
+                  <div className="module-icon">🛒</div>
+                  <h3>بازار</h3>
+                  <p>تجارت الکترونیک، NFT، خدمات</p>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {activeTab === 'todo' && (
-          <div className="tab-content">
-            <div className="tab-header">
+          {activeTabId === 'todo' && (
+            <div className="tab-content-inner">
               <h2>📝 لیست کارها</h2>
-              <button className="tab-close" onClick={closeTab}>✕</button>
-            </div>
-            
-            <div className="todo-container">
-              <div className="todo-input-section">
-                <input
-                  type="text"
-                  value={newTodo}
-                  onChange={(e) => setNewTodo(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && addTodo()}
-                  placeholder="کار جدید اضافه کنید..."
-                  className="todo-input"
-                />
-                <button onClick={addTodo} className="todo-add-btn">➕ افزودن</button>
-              </div>
+              
+              <div className="todo-container">
+                <div className="todo-input-section">
+                  <input
+                    type="text"
+                    value={newTodo}
+                    onChange={(e) => setNewTodo(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && addTodo()}
+                    placeholder="کار جدید اضافه کنید..."
+                    className="todo-input"
+                  />
+                  <button onClick={addTodo} className="todo-add-btn">➕ افزودن</button>
+                </div>
 
-              <div className="todo-list">
-                {todos.length === 0 ? (
-                  <div className="empty-state">
-                    <span className="empty-icon">📋</span>
-                    <p>هنوز کاری اضافه نشده است</p>
-                  </div>
-                ) : (
-                  todos.map(todo => (
-                    <div key={todo.id} className={`todo-item ${todo.done ? 'done' : ''}`}>
-                      <input
-                        type="checkbox"
-                        checked={todo.done}
-                        onChange={() => toggleTodo(todo.id)}
-                      />
-                      <span className="todo-text">{todo.text}</span>
-                      <button onClick={() => deleteTodo(todo.id)} className="todo-delete">🗑️</button>
+                <div className="todo-list">
+                  {todos.length === 0 ? (
+                    <div className="empty-state">
+                      <span className="empty-icon">📋</span>
+                      <p>هنوز کاری اضافه نشده است</p>
                     </div>
-                  ))
-                )}
+                  ) : (
+                    todos.map(todo => (
+                      <div key={todo.id} className={`todo-item ${todo.done ? 'done' : ''}`}>
+                        <input
+                          type="checkbox"
+                          checked={todo.done}
+                          onChange={() => toggleTodo(todo.id)}
+                        />
+                        <span className="todo-text">{todo.text}</span>
+                        <button onClick={() => deleteTodo(todo.id)} className="todo-delete">🗑️</button>
+                      </div>
+                    ))
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {activeTab === 'weather' && (
-          <div className="tab-content">
-            <div className="tab-header">
+          {activeTabId === 'weather' && (
+            <div className="tab-content-inner">
               <h2>🌤️ هواشناسی</h2>
-              <button className="tab-close" onClick={closeTab}>✕</button>
+              <div style={{padding: '40px', textAlign: 'center'}}>
+                <div style={{fontSize: '80px', marginBottom: '20px'}}>{weather.condition}</div>
+                <div style={{fontSize: '48px', fontWeight: 'bold'}}>{weather.temp}°C</div>
+                <div style={{fontSize: '18px', color: '#64748b', marginTop: '10px'}}>نورنبرگ، آلمان</div>
+              </div>
             </div>
-            <div style={{padding: '40px', textAlign: 'center'}}>
-              <div style={{fontSize: '80px', marginBottom: '20px'}}>{weather.condition}</div>
-              <div style={{fontSize: '48px', fontWeight: 'bold'}}>{weather.temp}°C</div>
-              <div style={{fontSize: '18px', color: '#64748b', marginTop: '10px'}}>نورنبرگ، آلمان</div>
-            </div>
-          </div>
-        )}
+          )}
 
-        {activeTab && activeTab !== 'todo' && activeTab !== 'weather' && (
-          <div className="tab-content">
-            <div className="tab-header">
-              <h2>{activeTab}</h2>
-              <button className="tab-close" onClick={closeTab}>✕</button>
+          {activeTabId !== 'home' && activeTabId !== 'todo' && activeTabId !== 'weather' && (
+            <div className="tab-content-inner">
+              <h2>{tabs.find(t => t.id === activeTabId)?.name}</h2>
+              <div style={{padding: '40px', textAlign: 'center', color: '#64748b'}}>
+                <p>محتوای {tabs.find(t => t.id === activeTabId)?.name} به زودی اضافه می‌شود</p>
+              </div>
             </div>
-            <div style={{padding: '40px', textAlign: 'center', color: '#64748b'}}>
-              <p>محتوای {activeTab} به زودی اضافه می‌شود</p>
-            </div>
-          </div>
-        )}
+          )}
+        </div>
       </main>
 
       <aside className="right-sidebar">
@@ -281,8 +314,8 @@ export default function ClientApp() {
 
       <footer className="footer">
         <div className="footer-left">
-          <div className="footer-time" onClick={() => openTab('clock')} style={{cursor: 'pointer'}}>⏰ {currentTime}</div>
-          <div className="footer-date" onClick={() => openTab('calendar')} style={{cursor: 'pointer'}}>📅 {currentDate}</div>
+          <div className="footer-time" onClick={() => openTab('clock', 'ساعت', '⏰')} style={{cursor: 'pointer'}}>⏰ {currentTime}</div>
+          <div className="footer-date" onClick={() => openTab('calendar', 'تقویم', '📅')} style={{cursor: 'pointer'}}>📅 {currentDate}</div>
         </div>
 
         <div className="chat-section">
@@ -306,8 +339,8 @@ export default function ClientApp() {
         </div>
 
         <div className="footer-right">
-          <button className="footer-btn" title="تماس ویدیویی" onClick={() => openTab('video-call')}>📹</button>
-          <div className="footer-weather" onClick={() => openTab('weather')} style={{cursor: 'pointer'}}>{weather.condition} {weather.temp}°</div>
+          <button className="footer-btn" title="تماس ویدیویی" onClick={() => openTab('video-call', 'تماس تصویری', '📹')}>📹</button>
+          <div className="footer-weather" onClick={() => openTab('weather', 'هواشناسی', '🌤️')} style={{cursor: 'pointer'}}>{weather.condition} {weather.temp}°</div>
         </div>
       </footer>
 
