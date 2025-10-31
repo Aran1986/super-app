@@ -349,7 +349,98 @@ export default function ClientApp() {
             </div>
           )}
 
-          {activeTabId !== 'home' && activeTabId !== 'todo' && activeTabId !== 'weather' && activeTabId !== 'video-call' && (
+          {activeTabId === 'entertainment' && (
+            <div className="tab-content-inner">
+              <h2>🎬 سرگرمی و بازی</h2>
+              <div className="games-grid">
+                <div className="game-card" onClick={() => openTab('chess', 'شطرنج', '♟️')}>
+                  <div className="game-icon">♟️</div>
+                  <h3>شطرنج</h3>
+                  <p>بازی آنلاین با دیگران</p>
+                </div>
+                
+                <div className="game-card" onClick={() => openTab('2048', '2048', '🎮')}>
+                  <div className="game-icon">🎮</div>
+                  <h3>2048</h3>
+                  <p>پازل اعداد</p>
+                </div>
+                
+                <div className="game-card" onClick={() => openTab('tetris', 'تتریس', '🧱')}>
+                  <div className="game-icon">🧱</div>
+                  <h3>تتریس</h3>
+                  <p>کلاسیک همیشگی</p>
+                </div>
+                
+                <div className="game-card" onClick={() => openTab('snake', 'مار', '🐍')}>
+                  <div className="game-icon">🐍</div>
+                  <h3>بازی مار</h3>
+                  <p>بازی نوستالژیک</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTabId === 'chess' && (
+            <div className="tab-content-inner" style={{padding: 0}}>
+              <div className="game-wrapper">
+                <div className="game-header">
+                  <h3>♟️ شطرنج آنلاین - Lichess</h3>
+                  <div className="game-controls">
+                    <button onClick={() => window.open('https://lichess.org', '_blank')}>🔗 باز کردن در Lichess</button>
+                  </div>
+                </div>
+                <iframe
+                  src="https://lichess.org/training"
+                  style={{width: '100%', height: '700px', border: 'none'}}
+                  allow="fullscreen"
+                ></iframe>
+              </div>
+            </div>
+          )}
+
+          {activeTabId === '2048' && (
+            <div className="tab-content-inner" style={{padding: 0}}>
+              <div className="game-wrapper">
+                <div className="game-header">
+                  <h3>🎮 بازی 2048</h3>
+                </div>
+                <iframe
+                  src="https://play2048.co/"
+                  style={{width: '100%', height: '700px', border: 'none'}}
+                ></iframe>
+              </div>
+            </div>
+          )}
+
+          {activeTabId === 'tetris' && (
+            <div className="tab-content-inner" style={{padding: 0}}>
+              <div className="game-wrapper">
+                <div className="game-header">
+                  <h3>🧱 تتریس</h3>
+                </div>
+                <iframe
+                  src="https://tetris.com/play-tetris"
+                  style={{width: '100%', height: '700px', border: 'none'}}
+                ></iframe>
+              </div>
+            </div>
+          )}
+
+          {activeTabId === 'snake' && (
+            <div className="tab-content-inner" style={{padding: 0}}>
+              <div className="game-wrapper">
+                <div className="game-header">
+                  <h3>🐍 بازی مار</h3>
+                </div>
+                <iframe
+                  src="https://www.google.com/fbx?fbx=snake_arcade"
+                  style={{width: '100%', height: '700px', border: 'none'}}
+                ></iframe>
+              </div>
+            </div>
+          )}
+
+          {activeTabId !== 'home' && activeTabId !== 'todo' && activeTabId !== 'weather' && activeTabId !== 'video-call' && activeTabId !== 'entertainment' && activeTabId !== 'chess' && activeTabId !== '2048' && activeTabId !== 'tetris' && activeTabId !== 'snake' && (
             <div className="tab-content-inner">
               <h2>{tabs.find(t => t.id === activeTabId)?.name}</h2>
               <div style={{padding: '40px', textAlign: 'center', color: '#64748b'}}>
