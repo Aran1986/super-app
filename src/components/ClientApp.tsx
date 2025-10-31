@@ -12,10 +12,19 @@ export default function ClientApp() {
   const [activeTabId, setActiveTabId] = useState('home');
   const [showProfile, setShowProfile] = useState(false);
   const [showNotes, setShowNotes] = useState(false);
+  const [showTodo, setShowTodo] = useState(false);
   const [todos, setTodos] = useState<Array<{id: number, text: string, done: boolean}>>([]);
   const [newTodo, setNewTodo] = useState('');
   const [notes, setNotes] = useState<Array<{id: number, title: string, content: string}>>([]);
   const [newNote, setNewNote] = useState({ title: '', content: '' });
+  const [profileData, setProfileData] = useState({
+    name: 'علیرضا رحیمی',
+    email: 'alireza@example.com',
+    phone: '09123456789',
+    wallet: '0x742d...5f8a',
+    balance: '12.5 ETH',
+    avatar: 'AR'
+  });
 
   useEffect(() => {
     const updateTime = () => {
@@ -94,33 +103,85 @@ export default function ClientApp() {
         </div>
         
         <div className="header-right">
-          <button className="header-btn" onClick={() => openTab('todo', 'لیست کارها', '📝')}>📝</button>
           <button className="header-btn notif">🔔</button>
           <button className="header-btn wallet">
             <span>💳</span>
             <span>کیف پول</span>
           </button>
-          <button className="header-btn avatar" onClick={() => setShowProfile(!showProfile)}>AR</button>
-          
-          {showProfile && (
-            <div className="profile-dropdown">
-              <div className="profile-header">
-                <div className="profile-avatar">AR</div>
-                <div>
-                  <h3>علیرضا رحیمی</h3>
-                  <p>alireza@example.com</p>
-                </div>
-              </div>
-              <div className="profile-menu">
-                <button>⚙️ تنظیمات</button>
-                <button>👤 پروفایل</button>
-                <button>🔐 امنیت</button>
-                <button className="logout">🚪 خروج</button>
-              </div>
-            </div>
-          )}
+          <button className="header-btn avatar" onClick={() => setShowProfile(!showProfile)}>{profileData.avatar}</button>
         </div>
       </header>
+
+      {showProfile && (
+        <>
+          <div className="modal-overlay" onClick={() => setShowProfile(false)}></div>
+          <div className="profile-modal">
+            <button className="modal-close" onClick={() => setShowProfile(false)}>✕</button>
+            
+            <div className="profile-modal-header">
+              <div className="profile-modal-avatar">{profileData.avatar}</div>
+              <h2>{profileData.name}</h2>
+              <p>{profileData.email}</p>
+            </div>
+
+            <div className="profile-modal-body">
+              <div className="profile-section">
+                <h3>💳 کیف پول</h3>
+                <div className="profile-info-card">
+                  <div className="info-row">
+                    <span className="info-label">آدرس:</span>
+                    <span className="info-value">{profileData.wallet}</span>
+                  </div>
+                  <div className="info-row">
+                    <span className="info-label">موجودی:</span>
+                    <span className="info-value balance">{profileData.balance}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="profile-section">
+                <h3>📱 اطلاعات تماس</h3>
+                <div className="profile-info-card">
+                  <div className="info-row">
+                    <span className="info-label">شماره تماس:</span>
+                    <span className="info-value">{profileData.phone}</span>
+                  </div>
+                  <div className="info-row">
+                    <span className="info-label">ایمیل:</span>
+                    <span className="info-value">{profileData.email}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="profile-section">
+                <h3>⚙️ تنظیمات</h3>
+                <div className="profile-menu-list">
+                  <button className="profile-menu-item">
+                    <span>👤</span>
+                    <span>ویرایش پروفایل</span>
+                  </button>
+                  <button className="profile-menu-item">
+                    <span>🔐</span>
+                    <span>امنیت و رمز عبور</span>
+                  </button>
+                  <button className="profile-menu-item">
+                    <span>🔔</span>
+                    <span>اعلان‌ها</span>
+                  </button>
+                  <button className="profile-menu-item">
+                    <span>🌐</span>
+                    <span>زبان و منطقه</span>
+                  </button>
+                  <button className="profile-menu-item danger">
+                    <span>🚪</span>
+                    <span>خروج از حساب</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
 
       <aside className="left-sidebar">
         <div className="menu-item active" onClick={() => openTab('home', 'خانه', '🏠')}>
@@ -278,7 +339,17 @@ export default function ClientApp() {
             </div>
           )}
 
-          {activeTabId !== 'home' && activeTabId !== 'todo' && activeTabId !== 'weather' && (
+          {activeTabId === 'video-call' && (
+            <div className="tab-content-inner" style={{padding: 0, height: '100%'}}>
+              <iframe
+                src="https://meet.jit.si/SuperAppMeeting"
+                allow="camera; microphone; fullscreen; display-capture"
+                style={{width: '100%', height: '600px', border: 'none', borderRadius: '16px'}}
+              ></iframe>
+            </div>
+          )}
+
+          {activeTabId !== 'home' && activeTabId !== 'todo' && activeTabId !== 'weather' && activeTabId !== 'video-call' && (
             <div className="tab-content-inner">
               <h2>{tabs.find(t => t.id === activeTabId)?.name}</h2>
               <div style={{padding: '40px', textAlign: 'center', color: '#64748b'}}>
@@ -290,8 +361,12 @@ export default function ClientApp() {
       </main>
 
       <aside className="right-sidebar">
-        <div className="menu-item" onClick={() => setShowNotes(!showNotes)}>
+        <div className="menu-item" onClick={() => setShowTodo(!showTodo)}>
           <span className="icon">📝</span>
+          <span className="text">کارها</span>
+        </div>
+        <div className="menu-item" onClick={() => setShowNotes(!showNotes)}>
+          <span className="icon">📒</span>
           <span className="text">یادداشت</span>
         </div>
         <div className="menu-item">
@@ -343,6 +418,47 @@ export default function ClientApp() {
           <div className="footer-weather" onClick={() => openTab('weather', 'هواشناسی', '🌤️')} style={{cursor: 'pointer'}}>{weather.condition} {weather.temp}°</div>
         </div>
       </footer>
+
+      {showTodo && (
+        <div className="todo-panel">
+          <div className="panel-header">
+            <h3>📝 لیست کارها</h3>
+            <button onClick={() => setShowTodo(false)}>✕</button>
+          </div>
+          
+          <div className="todo-panel-input">
+            <input
+              type="text"
+              value={newTodo}
+              onChange={(e) => setNewTodo(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && addTodo()}
+              placeholder="کار جدید..."
+            />
+            <button onClick={addTodo}>➕</button>
+          </div>
+
+          <div className="todo-panel-list">
+            {todos.length === 0 ? (
+              <div className="empty-state-small">
+                <span>📋</span>
+                <p>لیست خالی است</p>
+              </div>
+            ) : (
+              todos.map(todo => (
+                <div key={todo.id} className={`todo-panel-item ${todo.done ? 'done' : ''}`}>
+                  <input
+                    type="checkbox"
+                    checked={todo.done}
+                    onChange={() => toggleTodo(todo.id)}
+                  />
+                  <span>{todo.text}</span>
+                  <button onClick={() => deleteTodo(todo.id)}>🗑️</button>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      )}
 
       {showNotes && (
         <div className="notes-panel">
