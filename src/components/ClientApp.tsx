@@ -1,12 +1,24 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface Tab {
   id: string;
   title: string;
   icon: string;
   component: React.ReactNode;
+}
+
+interface Task {
+  id: number;
+  text: string;
+  completed: boolean;
+}
+
+interface Note {
+  id: number;
+  title: string;
+  content: string;
 }
 
 export default function ClientApp() {
@@ -21,6 +33,12 @@ export default function ClientApp() {
   const [activeTabId, setActiveTabId] = useState('home');
 
   const openTab = (title: string, icon: string, component: React.ReactNode) => {
+    const existingTab = tabs.find(t => t.title === title);
+    if (existingTab) {
+      setActiveTabId(existingTab.id);
+      return;
+    }
+    
     const tabId = `tab-${Date.now()}`;
     const newTab: Tab = { id: tabId, title, icon, component };
     setTabs([...tabs, newTab]);
@@ -116,7 +134,7 @@ function Header({ openTab }: { openTab: (title: string, icon: string, component:
         </button>
         <button 
           className="header-btn avatar"
-          onClick={() => openTab('پروفایل', '👤', <ProfileContent />)}
+          onClick={() => openTab('پروفایل', '👤', <ProfilePanel />)}
         >
           AR
         </button>
@@ -179,17 +197,13 @@ function LeftSidebar({ openTab }: { openTab: (title: string, icon: string, compo
 function RightSidebar({ openTab }: { openTab: (title: string, icon: string, component: React.ReactNode) => void }) {
   return (
     <aside className="right-sidebar">
-      <div className="menu-item" onClick={() => openTab('یادداشت‌ها', '📝', <NotesContent />)}>
-        <span className="icon">📝</span>
-        <span className="text">یادداشت</span>
-      </div>
-      <div className="menu-item" onClick={() => openTab('تقویم', '📅', <CalendarContent />)}>
-        <span className="icon">📅</span>
-        <span className="text">تقویم</span>
-      </div>
-      <div className="menu-item" onClick={() => openTab('لیست کارها', '✓', <TasksContent />)}>
+      <div className="menu-item" onClick={() => openTab('تودولیست', '✓', <TodoList />)}>
         <span className="icon">✓</span>
         <span className="text">کارها</span>
+      </div>
+      <div className="menu-item" onClick={() => openTab('یادداشت‌ها', '📝', <NotesPanel />)}>
+        <span className="icon">📝</span>
+        <span className="text">یادداشت</span>
       </div>
       <div className="menu-item" onClick={() => openTab('تنظیمات', '⚙️', <SettingsContent />)}>
         <span className="icon">⚙️</span>
@@ -200,9 +214,32 @@ function RightSidebar({ openTab }: { openTab: (title: string, icon: string, comp
 }
 
 function Footer({ openTab }: { openTab: (title: string, icon: string, component: React.ReactNode) => void }) {
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+  };
+
+  const formatDate = (date: Date) => {
+    return date.toLocaleDateString('fa-IR', { year: 'numeric', month: 'long', day: 'numeric' });
+  };
+
   return (
     <footer className="footer">
-      <button className="footer-side-btn">👈</button>
+      <div className="footer-left">
+        <WeatherWidget />
+        <div className="datetime-widget" onClick={() => openTab('تقویم', '📅', <CalendarWidget />)}>
+          <div className="time">{formatTime(currentTime)}</div>
+          <div className="date">{formatDate(currentTime)}</div>
+        </div>
+      </div>
       
       <div className="chat-section">
         <button className="chat-action-btn">📎</button>
@@ -216,12 +253,401 @@ function Footer({ openTab }: { openTab: (title: string, icon: string, component:
         <button className="chat-send-btn">➤</button>
       </div>
       
-      <button className="footer-side-btn">👉</button>
+      <div className="footer-right">
+        <button 
+          className="jitsi-btn"
+          onClick={() => openTab('تماس ویدیویی', '📹', <JitsiMeet />)}
+          title="Jitsi Meet - تماس ویدیویی"
+        >
+          📹
+        </button>
+      </div>
     </footer>
   );
 }
 
-// ===== CONTENT COMPONENTS =====
+// ===== WIDGETS =====
+
+function WeatherWidget() {
+  const [weather, setWeather] = useState({ temp: 22, condition: '☀️', city: 'تهران' });
+
+  return (
+    <div className="weather-widget">
+      <span className="weather-icon">{weather.condition}</span>
+      <span className="weather-temp">{weather.temp}°</span>
+      <span className="weather-city">{weather.city}</span>
+    </div>
+  );
+}
+
+function CalendarWidget() {
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(new Date());
+
+  const getDaysInMonth = (date: Date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    return { firstDay, daysInMonth };
+  };
+
+  const { firstDay, daysInMonth } = getDaysInMonth(currentDate);
+  const days = [];
+  
+  for (let i = 0; i < firstDay; i++) {
+    days.push(<div key={`empty-${i}`} className="calendar-day empty"></div>);
+  }
+  
+  for (let day = 1; day <= daysInMonth; day++) {
+    const isToday = day === new Date().getDate() && 
+                    currentDate.getMonth() === new Date().getMonth() &&
+                    currentDate.getFullYear() === new Date().getFullYear();
+    const isSelected = day === selectedDate.getDate() &&
+                       currentDate.getMonth() === selectedDate.getMonth() &&
+                       currentDate.getFullYear() === selectedDate.getFullYear();
+    
+    days.push(
+      <div 
+        key={day} 
+        className={`calendar-day ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}`}
+        onClick={() => setSelectedDate(new Date(currentDate.getFullYear(), currentDate.getMonth(), day))}
+      >
+        {day}
+      </div>
+    );
+  }
+
+  const monthNames = ['ژانویه', 'فوریه', 'مارس', 'آوریل', 'می', 'ژوئن', 'ژولای', 'اوت', 'سپتامبر', 'اکتبر', 'نوامبر', 'دسامبر'];
+  const dayNames = ['ی', 'د', 'س', 'چ', 'پ', 'ج', 'ش'];
+
+  return (
+    <div className="module-content">
+      <div className="calendar-container">
+        <div className="calendar-header">
+          <button onClick={() => setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() - 1)))}>❮</button>
+          <span>{monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}</span>
+          <button onClick={() => setCurrentDate(new Date(currentDate.setMonth(currentDate.getMonth() + 1)))}>❯</button>
+        </div>
+        <div className="calendar-weekdays">
+          {dayNames.map(day => <div key={day} className="weekday">{day}</div>)}
+        </div>
+        <div className="calendar-grid">
+          {days}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function JitsiMeet() {
+  const [roomName, setRoomName] = useState('');
+  const [isInMeeting, setIsInMeeting] = useState(false);
+
+  const startMeeting = () => {
+    if (roomName.trim()) {
+      setIsInMeeting(true);
+    }
+  };
+
+  return (
+    <div className="module-content">
+      {!isInMeeting ? (
+        <div className="jitsi-setup">
+          <h3>تماس ویدیویی Jitsi Meet</h3>
+          <input
+            type="text"
+            value={roomName}
+            onChange={(e) => setRoomName(e.target.value)}
+            placeholder="نام اتاق را وارد کنید"
+            className="jitsi-input"
+          />
+          <button onClick={startMeeting} className="jitsi-start-btn">
+            شروع جلسه
+          </button>
+        </div>
+      ) : (
+        <div className="jitsi-frame">
+          <iframe
+            src={`https://meet.jit.si/${roomName}`}
+            allow="camera; microphone; fullscreen; display-capture"
+            style={{ width: '100%', height: '600px', border: 'none', borderRadius: '12px' }}
+          ></iframe>
+          <button onClick={() => setIsInMeeting(false)} className="jitsi-leave-btn">
+            خروج از جلسه
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ===== FUNCTIONAL COMPONENTS =====
+
+function TodoList() {
+  const [tasks, setTasks] = useState<Task[]>([
+    { id: 1, text: 'مطالعه کتاب', completed: false },
+    { id: 2, text: 'ورزش صبحگاهی', completed: true },
+    { id: 3, text: 'جلسه تیمی', completed: false },
+  ]);
+  const [newTask, setNewTask] = useState('');
+
+  const addTask = () => {
+    if (newTask.trim()) {
+      setTasks([...tasks, { id: Date.now(), text: newTask, completed: false }]);
+      setNewTask('');
+    }
+  };
+
+  const toggleTask = (id: number) => {
+    setTasks(tasks.map(task => 
+      task.id === id ? { ...task, completed: !task.completed } : task
+    ));
+  };
+
+  const deleteTask = (id: number) => {
+    setTasks(tasks.filter(task => task.id !== id));
+  };
+
+  return (
+    <div className="module-content">
+      <div className="todo-container">
+        <div className="todo-input-section">
+          <input
+            type="text"
+            value={newTask}
+            onChange={(e) => setNewTask(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && addTask()}
+            placeholder="کار جدید اضافه کنید..."
+            className="todo-input"
+          />
+          <button onClick={addTask} className="todo-add-btn">+</button>
+        </div>
+        
+        <div className="tasks-list">
+          {tasks.map(task => (
+            <div key={task.id} className={`task-item ${task.completed ? 'completed' : ''}`}>
+              <input
+                type="checkbox"
+                checked={task.completed}
+                onChange={() => toggleTask(task.id)}
+                className="task-checkbox"
+              />
+              <span className="task-text">{task.text}</span>
+              <button onClick={() => deleteTask(task.id)} className="task-delete">×</button>
+            </div>
+          ))}
+        </div>
+        
+        <div className="todo-stats">
+          <span>همه: {tasks.length}</span>
+          <span>تکمیل شده: {tasks.filter(t => t.completed).length}</span>
+          <span>باقیمانده: {tasks.filter(t => !t.completed).length}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function NotesPanel() {
+  const [notes, setNotes] = useState<Note[]>([
+    { id: 1, title: 'یادداشت اول', content: 'محتوای یادداشت اول...' },
+    { id: 2, title: 'ایده جدید', content: 'یک ایده جالب برای پروژه' },
+  ]);
+  const [selectedNote, setSelectedNote] = useState<Note | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editTitle, setEditTitle] = useState('');
+  const [editContent, setEditContent] = useState('');
+
+  const createNewNote = () => {
+    const newNote: Note = {
+      id: Date.now(),
+      title: 'یادداشت جدید',
+      content: ''
+    };
+    setNotes([newNote, ...notes]);
+    setSelectedNote(newNote);
+    setIsEditing(true);
+    setEditTitle(newNote.title);
+    setEditContent(newNote.content);
+  };
+
+  const saveNote = () => {
+    if (selectedNote) {
+      setNotes(notes.map(note =>
+        note.id === selectedNote.id
+          ? { ...note, title: editTitle, content: editContent }
+          : note
+      ));
+      setSelectedNote({ ...selectedNote, title: editTitle, content: editContent });
+      setIsEditing(false);
+    }
+  };
+
+  const deleteNote = (id: number) => {
+    setNotes(notes.filter(note => note.id !== id));
+    if (selectedNote?.id === id) {
+      setSelectedNote(null);
+    }
+  };
+
+  return (
+    <div className="module-content">
+      <div className="notes-container">
+        <div className="notes-sidebar-panel">
+          <button onClick={createNewNote} className="new-note-btn">+ یادداشت جدید</button>
+          <div className="notes-list">
+            {notes.map(note => (
+              <div
+                key={note.id}
+                className={`note-item ${selectedNote?.id === note.id ? 'active' : ''}`}
+                onClick={() => {
+                  setSelectedNote(note);
+                  setIsEditing(false);
+                }}
+              >
+                <h4>{note.title}</h4>
+                <p>{note.content.substring(0, 50)}...</p>
+                <button onClick={(e) => { e.stopPropagation(); deleteNote(note.id); }} className="note-delete">×</button>
+              </div>
+            ))}
+          </div>
+        </div>
+        
+        <div className="note-editor">
+          {selectedNote ? (
+            isEditing ? (
+              <>
+                <input
+                  type="text"
+                  value={editTitle}
+                  onChange={(e) => setEditTitle(e.target.value)}
+                  className="note-title-input"
+                  placeholder="عنوان یادداشت"
+                />
+                <textarea
+                  value={editContent}
+                  onChange={(e) => setEditContent(e.target.value)}
+                  className="note-content-input"
+                  placeholder="محتوای یادداشت..."
+                />
+                <div className="note-actions">
+                  <button onClick={saveNote} className="save-btn">ذخیره</button>
+                  <button onClick={() => setIsEditing(false)} className="cancel-btn">انصراف</button>
+                </div>
+              </>
+            ) : (
+              <>
+                <h2>{selectedNote.title}</h2>
+                <p className="note-content">{selectedNote.content}</p>
+                <button
+                  onClick={() => {
+                    setIsEditing(true);
+                    setEditTitle(selectedNote.title);
+                    setEditContent(selectedNote.content);
+                  }}
+                  className="edit-btn"
+                >
+                  ویرایش
+                </button>
+              </>
+            )
+          ) : (
+            <div className="no-note-selected">
+              <p>یک یادداشت انتخاب کنید یا یادداشت جدید ایجاد کنید</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ProfilePanel() {
+  const [profile, setProfile] = useState({
+    name: 'علی رضایی',
+    email: 'ali.rezaei@example.com',
+    phone: '09121234567',
+    bio: 'توسعه‌دهنده نرم‌افزار',
+    avatar: 'AR'
+  });
+  const [isEditing, setIsEditing] = useState(false);
+  const [editData, setEditData] = useState(profile);
+
+  const saveProfile = () => {
+    setProfile(editData);
+    setIsEditing(false);
+  };
+
+  return (
+    <div className="module-content">
+      <div className="profile-container">
+        <div className="profile-avatar-large">{profile.avatar}</div>
+        
+        {isEditing ? (
+          <div className="profile-form">
+            <input
+              type="text"
+              value={editData.name}
+              onChange={(e) => setEditData({ ...editData, name: e.target.value })}
+              placeholder="نام"
+              className="profile-input"
+            />
+            <input
+              type="email"
+              value={editData.email}
+              onChange={(e) => setEditData({ ...editData, email: e.target.value })}
+              placeholder="ایمیل"
+              className="profile-input"
+            />
+            <input
+              type="tel"
+              value={editData.phone}
+              onChange={(e) => setEditData({ ...editData, phone: e.target.value })}
+              placeholder="تلفن"
+              className="profile-input"
+            />
+            <textarea
+              value={editData.bio}
+              onChange={(e) => setEditData({ ...editData, bio: e.target.value })}
+              placeholder="بیوگرافی"
+              className="profile-textarea"
+            />
+            <div className="profile-actions">
+              <button onClick={saveProfile} className="save-btn">ذخیره</button>
+              <button onClick={() => { setIsEditing(false); setEditData(profile); }} className="cancel-btn">انصراف</button>
+            </div>
+          </div>
+        ) : (
+          <div className="profile-info">
+            <h2>{profile.name}</h2>
+            <p className="profile-email">{profile.email}</p>
+            <p className="profile-phone">{profile.phone}</p>
+            <p className="profile-bio">{profile.bio}</p>
+            <button onClick={() => setIsEditing(true)} className="edit-profile-btn">ویرایش پروفایل</button>
+          </div>
+        )}
+        
+        <div className="profile-stats">
+          <div className="stat-card">
+            <span className="stat-number">12</span>
+            <span className="stat-label">دنبال‌کننده</span>
+          </div>
+          <div className="stat-card">
+            <span className="stat-number">45</span>
+            <span className="stat-label">دنبال‌شونده</span>
+          </div>
+          <div className="stat-card">
+            <span className="stat-number">8</span>
+            <span className="stat-label">پست</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ===== OTHER CONTENT COMPONENTS =====
 
 function HomeContent() {
   return (
@@ -270,32 +696,9 @@ function HomeContent() {
   );
 }
 
-function ProfileContent() {
-  return (
-    <div className="module-content">
-      <div className="profile-section">
-        <div className="profile-avatar">AR</div>
-        <h2>علی رضایی</h2>
-        <p>ali.rezaei@example.com</p>
-        <div className="profile-stats">
-          <div className="stat-item">
-            <span className="stat-value">12</span>
-            <span className="stat-label">دنبال‌کننده</span>
-          </div>
-          <div className="stat-item">
-            <span className="stat-value">45</span>
-            <span className="stat-label">دنبال‌شونده</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function NotificationsContent() {
   return (
     <div className="module-content">
-      <h2>اعلان‌ها</h2>
       <div className="notifications-list">
         <div className="notification-item">
           <span className="notif-icon">💰</span>
@@ -304,44 +707,12 @@ function NotificationsContent() {
             <p className="notif-desc">واریز 100 دلار به حساب شما</p>
           </div>
         </div>
-      </div>
-    </div>
-  );
-}
-
-function NotesContent() {
-  return (
-    <div className="module-content">
-      <h2>یادداشت‌های من</h2>
-      <div className="notes-grid">
-        <div className="note-card">
-          <h3>یادداشت اول</h3>
-          <p>محتوای یادداشت...</p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function CalendarContent() {
-  return (
-    <div className="module-content">
-      <h2>تقویم</h2>
-      <div className="calendar-view">
-        <p>نمای تقویم در اینجا...</p>
-      </div>
-    </div>
-  );
-}
-
-function TasksContent() {
-  return (
-    <div className="module-content">
-      <h2>لیست کارها</h2>
-      <div className="tasks-list">
-        <div className="task-item">
-          <input type="checkbox" />
-          <span>کار اول</span>
+        <div className="notification-item">
+          <span className="notif-icon">👥</span>
+          <div className="notif-content">
+            <p className="notif-title">دنبال‌کننده جدید</p>
+            <p className="notif-desc">محمد احمدی شما را دنبال کرد</p>
+          </div>
         </div>
       </div>
     </div>
@@ -351,13 +722,19 @@ function TasksContent() {
 function SettingsContent() {
   return (
     <div className="module-content">
-      <h2>تنظیمات</h2>
       <div className="settings-sections">
         <div className="setting-item">
           <span>زبان</span>
           <select>
             <option>فارسی</option>
             <option>English</option>
+          </select>
+        </div>
+        <div className="setting-item">
+          <span>تم</span>
+          <select>
+            <option>روشن</option>
+            <option>تاریک</option>
           </select>
         </div>
       </div>
@@ -368,7 +745,6 @@ function SettingsContent() {
 function FinancialContent() {
   return (
     <div className="module-content">
-      <h2>خدمات مالی</h2>
       <div className="financial-modules">
         <div className="sub-module-card">💳 کیف پول</div>
         <div className="sub-module-card">💱 صرافی</div>
@@ -382,7 +758,6 @@ function FinancialContent() {
 function HealthContent() {
   return (
     <div className="module-content">
-      <h2>خدمات سلامت</h2>
       <div className="health-modules">
         <div className="sub-module-card">📋 پرونده پزشکی</div>
         <div className="sub-module-card">👨‍⚕️ پزشک آنلاین</div>
@@ -396,7 +771,6 @@ function HealthContent() {
 function SocialContent() {
   return (
     <div className="module-content">
-      <h2>شبکه‌های اجتماعی</h2>
       <div className="social-modules">
         <div className="sub-module-card">💬 پیام‌رسان</div>
         <div className="sub-module-card">📱 شبکه اجتماعی</div>
@@ -409,7 +783,6 @@ function SocialContent() {
 function MarketplaceContent() {
   return (
     <div className="module-content">
-      <h2>بازار</h2>
       <div className="marketplace-modules">
         <div className="sub-module-card">🛍️ فروشگاه</div>
         <div className="sub-module-card">🎨 NFT</div>
@@ -421,7 +794,6 @@ function MarketplaceContent() {
 function EducationContent() {
   return (
     <div className="module-content">
-      <h2>آموزش</h2>
       <div className="education-modules">
         <div className="sub-module-card">📖 دوره‌ها</div>
         <div className="sub-module-card">🎓 وبینار</div>
@@ -433,7 +805,6 @@ function EducationContent() {
 function EntertainmentContent() {
   return (
     <div className="module-content">
-      <h2>سرگرمی</h2>
       <div className="entertainment-modules">
         <div className="sub-module-card">🎵 موسیقی</div>
         <div className="sub-module-card">🎬 ویدیو</div>
@@ -446,7 +817,6 @@ function EntertainmentContent() {
 function TravelContent() {
   return (
     <div className="module-content">
-      <h2>سفر</h2>
       <div className="travel-modules">
         <div className="sub-module-card">✈️ پرواز</div>
         <div className="sub-module-card">🏨 هتل</div>
@@ -458,7 +828,6 @@ function TravelContent() {
 function BusinessContent() {
   return (
     <div className="module-content">
-      <h2>کسب‌وکار</h2>
       <div className="business-modules">
         <div className="sub-module-card">📊 مدیریت</div>
         <div className="sub-module-card">📈 تحلیل</div>
@@ -470,7 +839,6 @@ function BusinessContent() {
 function IoTContent() {
   return (
     <div className="module-content">
-      <h2>اینترنت اشیا</h2>
       <div className="iot-modules">
         <div className="sub-module-card">🏠 خانه هوشمند</div>
         <div className="sub-module-card">🚗 خودرو</div>
@@ -482,7 +850,6 @@ function IoTContent() {
 function AIContent() {
   return (
     <div className="module-content">
-      <h2>هوش مصنوعی</h2>
       <div className="ai-modules">
         <div className="sub-module-card">💬 چت AI</div>
         <div className="sub-module-card">🎨 تولید تصویر</div>
