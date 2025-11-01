@@ -1,9 +1,7 @@
-'use client';
-
-import dynamic from 'next/dynamic';
-
-const ClientApp = dynamic(() => import('./ClientApp'), { ssr: false });
+import ClientApp from '@/components/ClientApp';
 
 export default function Home() {
   return <ClientApp />;
 }
+
+// Location: src/app/page.tsx
