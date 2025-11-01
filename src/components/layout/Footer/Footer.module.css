@@ -1,0 +1,100 @@
+.footer {
+  grid-area: footer;
+  background: var(--white);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  gap: 16px;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.05);
+}
+
+.footerSideBtn {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: var(--light);
+  border-radius: 12px;
+  font-size: 24px;
+  cursor: pointer;
+  transition: all 0.3s;
+  flex-shrink: 0;
+}
+
+.footerSideBtn:hover {
+  background: #e2e8f0;
+  transform: scale(1.05);
+}
+
+.chatSection {
+  flex: 1;
+  max-width: 800px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--light);
+  padding: 8px 12px;
+  border-radius: 16px;
+  border: 2px solid var(--border);
+}
+
+.chatInput {
+  flex: 1;
+  height: 40px;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  color: var(--dark);
+  outline: none;
+  padding: 0 12px;
+}
+
+.chatInput::placeholder {
+  color: var(--gray);
+}
+
+.chatActionBtn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  border-radius: 10px;
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+  flex-shrink: 0;
+}
+
+.chatActionBtn:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.chatSendBtn {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  border-radius: 12px;
+  font-size: 20px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s;
+  flex-shrink: 0;
+}
+
+.chatSendBtn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+/* Location: src/components/layout/Footer/Footer.module.css */

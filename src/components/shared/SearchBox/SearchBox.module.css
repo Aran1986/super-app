@@ -1,0 +1,23 @@
+.searchBox {
+  position: relative;
+  width: 100%;
+}
+
+.searchBox input {
+  width: 100%;
+  padding: 12px 45px 12px 18px;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  font-size: 14px;
+  background: var(--light);
+  transition: all 0.3s;
+}
+
+.searchBox input:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: var(--white);
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+}
+
+/* Location: src/components/shared/SearchBox/SearchBox.module.css */

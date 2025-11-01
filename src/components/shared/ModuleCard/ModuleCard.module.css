@@ -1,0 +1,35 @@
+.moduleCard {
+  background: white;
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  transition: all 0.3s;
+  cursor: pointer;
+  border: 2px solid transparent;
+}
+
+.moduleCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+  border-color: var(--primary);
+}
+
+.moduleIcon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.moduleCard h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--dark);
+  margin-bottom: 8px;
+}
+
+.moduleCard p {
+  font-size: 14px;
+  color: var(--gray);
+  line-height: 1.6;
+}
+
+/* Location: src/components/shared/ModuleCard/ModuleCard.module.css */

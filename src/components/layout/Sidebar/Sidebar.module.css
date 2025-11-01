@@ -1,0 +1,53 @@
+.leftSidebar, .rightSidebar {
+  background: var(--dark);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 0;
+  gap: 8px;
+  overflow-y: auto;
+}
+
+.leftSidebar {
+  grid-area: left-sidebar;
+}
+
+.rightSidebar {
+  grid-area: right-sidebar;
+}
+
+.menuItem {
+  width: 54px;
+  height: 54px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.3s;
+  position: relative;
+  color: rgba(255,255,255,0.6);
+}
+
+.menuItem:hover {
+  background: rgba(255,255,255,0.1);
+  color: white;
+}
+
+.menuItem.active {
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  color: white;
+}
+
+.icon {
+  font-size: 24px;
+}
+
+.text {
+  font-size: 10px;
+  font-weight: 500;
+}
+
+/* Location: src/components/layout/Sidebar/Sidebar.module.css */
